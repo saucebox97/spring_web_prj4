@@ -1,26 +1,22 @@
 package com.project.web_prj.board.repository;
 
 import com.project.web_prj.board.domain.Board;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.List;
 
 @Repository("bri")
 @Log4j2
 //@RequiredArgsConstructor // 롬복못쓸경우
-public class BoardRepositorylmpl implements BoardRepository{
+public class BoardRepositoryImpl implements BoardRepository{
 
     private final JdbcTemplate template;
 
     @Autowired
-    public BoardRepositorylmpl(JdbcTemplate template) {
+    public BoardRepositoryImpl(JdbcTemplate template) {
         this.template = template;
     }
 
@@ -49,7 +45,6 @@ public class BoardRepositorylmpl implements BoardRepository{
         String sql = "SELECT * FROM tbl_board " +
                 "WHERE board_no=?"; // queryFor0bject는 리턴타입이 T 아무거나
         return template.queryForObject(sql, (rs, rn) -> {
-
             return new Board(rs);
         }, boardNo);
     }

@@ -5,101 +5,23 @@
 <html lang="ko">
 
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <%@ include file="./include/static-head.jsp" %>
 
-    <!-- 검색 엔진 최적화(SEO) -->
-    <meta name="author" content="Soongu Hong">
-    <meta name="description" content="Soon9's Web Site">
+    <style>
+        header {
+            background: #222;
+            border-bottom: 1px solid #2c2c2c;
+        }
+    </style>
 
-    <!-- http://ogp.me -->
-    <meta property="og:type" content="website">
-    <meta property="og:site_name" content="Soon9's Web studio">
-    <meta property="og:title" content="Soon9's Web studio">
-    <meta property="og:description" content="Welcome to Soon9's Web studio">
-    <meta property="og:image" content="img/visual2.jpg">
-    <meta property="og:url" content="http://www.soon9.co.kr">
-
-    <meta property="twitter:card" content="summary">
-    <meta property="twitter:site_name" content="Soon9's Web studio">
-    <meta property="twitter:title" content="Soon9's Web studio">
-    <meta property="twitter:description" content="Welcome to Soon9's Web studio">
-    <meta property="twitter:image" content="img/visual2.jpg">
-    <meta property="twitter:url" content="http://www.soon9.co.kr">
-
-    <title>Hong Studio</title>
-
-    <!-- 파비콘 넣기 -->
-    <link rel="icon" href="/siteicon.ico">
-    <link rel="apple-touch-icon" href="/siteicon.ico">
-
-    <!-- reset css -->
-    <link rel="stylesheet" href="/https://cdn.jsdelivr.net/npm/reset-css@5.0.1/reset.min.css">
-
-    <!-- linear icons -->
-    <!-- https://linearicons.com/free#cdn -->
-    <link rel="stylesheet" href="/https://cdn.linearicons.com/free/1.0.0/icon-font.min.css">
-
-    <!-- animate css || https://animate.style -->
-    <link rel="stylesheet" href="/css/animate.min.css">
-
-    <!-- slick css || https://kenwheeler.github.io/slick/  -->
-    <link rel="stylesheet" href="/css/slick.css">
-
-    <!-- custom css -->
-    <link rel="stylesheet" href="css/main.css">
-
-    <!-- jquery -->
-    <script src="/js/jquery-3.3.1.min.js"></script>
-
-    <!-- libraries -->
-    <!-- scrolla js -->
-    <script src="/js/scrolla.jquery.min.js" defer></script>
-    <!-- slick js -->
-    <script src="/js/slick.min.js" defer></script>
-
-    <!-- custom js -->
-    <script src="/js/config.js" defer></script>
-    <script src="/js/gnb-event.js" defer></script>
-    <script src="/js/scroll-event.js" defer></script>
 </head>
 
 <body>
 
 <div class="wrap">
 
-    <!-- header -->
-    <header>
-        <div class="inner-header">
-            <h1 class="logo">
-                <a href="#">
-                    <img src="/img/logo.png" alt="로고이미지">
-                </a>
-            </h1>
-            <h2 class="intro-text">Welcome</h2>
-            <a href="#" class="menu-open">
-                <span class="menu-txt">MENU</span>
-                <span class="lnr lnr-menu"></span>
-            </a>
-        </div>
-
-        <nav class="gnb">
-            <a href="#" class="close">
-                <span class="lnr lnr-cross"></span>
-            </a>
-            <ul>
-                <li><a href="#">Home</a></li>
-                <li><a href="#">About</a></li>
-                <li><a href="#">Work</a></li>
-                <li><a href="#">Contact</a></li>
-                <li><a href="#">News</a></li>
-                <li><a href="#">Favorite</a></li>
-            </ul>
-        </nav>
-
-    </header>
-    <!-- //header -->
+    <%@ include file="./include/header.jsp" %>
     
     <!-- section visual -->
     <section class="visual">
@@ -251,20 +173,7 @@
     </section>
     <!--  //section contents   -->
 
-    <!-- footer-->
-    <footer>
-        <ul>
-            <li>Hong Studio<br>사업자등록번호:123-12-12345 <br>대표자:홍길동</li>
-            <li>
-                <span>A :</span>서울 구로구 남성프라자<br>
-                <span>T :</span>010.7270.9984<br>
-                <span>E :</span>hsg9984@gmail.com<br>
-            </li>
-            <li> &#xa9 Hong Studio 2022 <br>All Rights Reseved</li>
-        </ul>
-        <a href="#top" class="go-top"><span class="lnr lnr-arrow-up"></span></a>
-    </footer>
-    <!-- //footer-->
+    <%@ include file="./include/footer.jsp" %>
 
 </div>
 
