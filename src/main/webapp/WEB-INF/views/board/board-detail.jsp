@@ -83,12 +83,12 @@
 
 
     <script>
-        const [$modBtn, $delBtn, $listBtn] 
+        const [$modBtn, $delBtn, $listBtn] // 72줄 잡아옴 role이 group인애
            = [...document.querySelector('div[role=group]').children];
 
         // const $modBtn = document.getElementById('mod-btn');
         //수정버튼
-        $modBtn.onclick = e => {
+        $modBtn.onclick = e => { // get임 post할려면 form써야됌
             location.href = '/board/modify?boardNo=${b.boardNo}';
         };
 

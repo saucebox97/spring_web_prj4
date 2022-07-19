@@ -16,3 +16,23 @@ SELECT *
 from tbl_board
 order by board_no DESC
 ;
+
+------
+
+-- ROWNUM 은 조회된 순서대로 순번
+SELECT ROWNUM, tbl_board.*
+FROM tbl_board
+WHERE ROWNUM BETWEEN 1 AND 20
+ORDER BY board_no DESC
+;
+-- 로우넘을 마지막에하면 안됌 순번이 섞여 버림
+-- 1 먼저 역정렬을함  2 로우넘 3 로우넘을 걸려냄
+SELECT *
+FROM (SELECT ROWNUM rn, v_board.*
+        FROM (
+                SELECT *
+                FROM tbl_board
+                ORDER BY board_no DESC
+                ) v_board)
+WHERE rn BETWEEN 11 AND 20
+;
