@@ -9,14 +9,31 @@
     <style>
         .board-list {
             width: 70%;
-            margin: 0 auto;
+            margin: 230px auto 0;
         }
 
         .board-list .articles {
-            margin: 250px auto 100px;
+            margin: 10px auto 100px;
             border-collapse: collapse;
             font-size: 1.5em;
             border-radius: 10px;
+        }
+
+        .board-list .amount {
+            display: flex;
+            /* background: skyblue; */
+            /* 오른쪽 끝으로 보냄 */
+            justify-content: flex-end; 
+            list-style: none;
+        }
+
+        .board-list .amount li {
+            width: 8%;
+            margin-right: 10px;
+        }
+
+        .board-list .amount li a {
+            width: 100%;
         }
 
         header {
@@ -63,6 +80,13 @@
         <%@ include file="../include/header.jsp" %>
 
         <div class="board-list">
+
+            <div class="amount"> 
+                <li><a class="btn btn-danger" href="/board/list?amount=10">10</a></li>
+                <li><a class="btn btn-danger" href="/board/list?amount=20">20</a></li>
+                <li><a class="btn btn-danger" href="/board/list?amount=30">30</a></li>
+            </div>
+
             <table class="table table-dark table-striped table-hover articles">
                 <tr>
                     <th>번호</th>
@@ -91,23 +115,25 @@
                 <nav aria-label="Page navigation example">
                     <ul class="pagination pagination-lg pagination-custom">
 
-                      <c:if test="${pm.prev}">
-                        <li class="page-item"><a class="page-link" href="/board/list?pageNum=${pm.beginPage - 1}">prev</a></li>
-                      </c:if>
+                        <c:if test="${pm.prev}">
+                            <li class="page-item"><a class="page-link"
+                                    href="/board/list?pageNum=${pm.beginPage - 1}&amount=${pm.page.amount}">prev</a></li>
+                        </c:if>
+                            <!-- li에 붙여야 다른숫자붙여도 appendPage할수있음 -->
+                        <c:forEach var="n" begin="${pm.beginPage}" end="${pm.endPage}" step="1">
+                            <li data-page-num="${n}" class="page-item">
+                                <a class="page-link" href="/board/list?pageNum=${n}&amount=${pm.page.amount}">${n}</a>
+                            </li>
+                        </c:forEach>
 
-                      <%--  for (int n = 1; n <= 10; n++) --%>
-                      <c:forEach var="n" begin="${pm.beginPage}" end="${pm.endPage}" step="1">
-                        <li class="page-item">
-                            <a class="page-link" href="/board/list?pageNum=${n}">${n}</a>
-                        </li>
-                      </c:forEach>
+                        <c:if test="${pm.next}">
+                            <li class="page-item"><a class="page-link"
+                                    href="/board/list?pageNum=${pm.endPage + 1}&amount=${pm.page.amount}">next</a></li>
+                        </c:if>
 
-                      <c:if test="${pm.next}">
-                        <li class="page-item"><a class="page-link" href="/board/list?pageNum=${pm.endPage + 1}">next</a></li>
-                       </c:if>
-                    
                     </ul>
-                  </nav>
+                </nav>
+
 
                 <!-- 글쓰기 버튼 영역 -->
                 <div class="btn-write">
@@ -123,25 +149,66 @@
 <!-- td중 멀눌러도 tr가고 첫째자식불러들임 -->
     <script>
 
-        const msg = '${msg}';
-        console.log('msg: ', msg);
+        function alertServerMessage() {
+            const msg = '${msg}';
+            console.log('msg: ', msg);
 
-        if (msg === 'reg-success') {
-            alert('게시물이 정상 등록되었습니다.');
+            if (msg === 'reg-success') {
+                alert('게시물이 정상 등록되었습니다.');
+            }
+        }
+        
+        function detailEvent() {
+
+            //상세보기 요청 이벤트
+            const $table = document.querySelector(".articles");
+            $table.addEventListener('click', e => {
+                if (!e.target.matches('.articles td')) return;
+
+                console.log('tr 클릭됨! - ', e.target);
+                //  td중 멀눌러도 tr가고 첫째자식불러들임 /부모에게갓다가 첫쨰에게 
+                let bn = e.target.parentElement.firstElementChild.textContent;
+                console.log('글번호: ' + bn);
+
+                location.href = '/board/content/' + bn 
+                                + "?pageNum=${pm.page.pageNum}"
+                                + "&amount=${pm.page.amount}";
+            });
+
         }
 
-        //상세보기 요청 이벤트
-        const $table = document.querySelector(".articles");
-        $table.addEventListener('click', e => {
-            if (!e.target.matches('.articles td')) return;
+        //현재 위치한 페이지에 active 스타일 부여하기
+        function appendPageActive() {
 
-            console.log('tr 클릭됨! - ', e.target);
-            //  td중 멀눌러도 tr가고 첫째자식불러들임 /부모에게갓다가 첫쨰에게 
-            let bn = e.target.parentElement.firstElementChild.textContent;
-            console.log('글번호: ' + bn);
+            // 현재 내가 보고 있는 페이지 넘버
+            const curPageNum = '${pm.page.pageNum}';
+            // console.log("현재페이지: ", curPageNum);
 
-            location.href = '/board/content/' + bn;
-        });
+            // 페이지 li태그들을 전부 확인해서 
+            // 현재 위치한 페이지 넘버와 텍스트컨텐츠가 일치하는
+            // li를 찾아서 class active 부여
+            const $ul = document.querySelector('.pagination');
+
+            for (let $li of [...$ul.children]) {
+                if (curPageNum === $li.dataset.pageNum) {
+                    $li.classList.add('active');
+                    break;
+                }
+            }
+
+        }
+
+
+        (function () {
+
+            alertServerMessage();
+            detailEvent();
+            appendPageActive();
+
+        })();
+
+
+        
 
     </script>
 

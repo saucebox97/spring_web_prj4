@@ -1,8 +1,10 @@
 package com.project.web_prj.board.service;
 
 import com.project.web_prj.board.domain.Board;
+import com.project.web_prj.board.repository.BoardMapper;
 import com.project.web_prj.board.repository.BoardRepository;
 import com.project.web_prj.common.paging.Page;
+import com.project.web_prj.common.search.Search;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
@@ -23,7 +25,8 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class BoardService {
 
-    private final BoardRepository repository;
+//    private final BoardRepository repository;
+    private final BoardMapper repository;
 
     // 게시물 등록 요청 중간 처리
     public boolean saveService(Board board) {
@@ -32,15 +35,15 @@ public class BoardService {
     }
 
     // 게시물 전체 조회 요청 중간 처리
-    public List<Board> findAllService() {
-        log.info("findAll service start");
-        List<Board> boardList = repository.findAll();
-
-        // 목록 중간 데이터처리
-        processConverting(boardList);
-
-        return boardList;
-    }
+//    public List<Board> findAllService() {
+//        log.info("findAll service start");
+//        List<Board> boardList = repository.findAll();
+//
+//        // 목록 중간 데이터처리
+//        processConverting(boardList);
+//
+//        return boardList;
+//    }
 
     // 게시물 전체 조회 요청 중간 처리 with paging
     public Map<String, Object> findAllService(Page page) {
@@ -49,6 +52,21 @@ public class BoardService {
         Map<String, Object> findDataMap = new HashMap<>();
 
         List<Board> boardList = repository.findAll(page);
+        // 목록 중간 데이터 처리
+        processConverting(boardList);
+
+        findDataMap.put("bList", boardList);
+        findDataMap.put("tc", repository.getTotalCount());
+
+        return findDataMap;
+    }
+
+    public Map<String, Object> findAllService(Search search) {
+        log.info("findAll service start");
+
+        Map<String, Object> findDataMap = new HashMap<>();
+
+        List<Board> boardList = repository.findAll2(search);
         // 목록 중간 데이터 처리
         processConverting(boardList);
 

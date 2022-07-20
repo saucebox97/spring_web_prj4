@@ -37,15 +37,15 @@ class BoardRepositoryImplTest {
         }
     }
 
-    @Test
-    @DisplayName("전체 게시물을 조회하고 반환된 리스트의 사이즈는 300이어야 한다.")
-    void findAllTest() {
-
-        List<Board> boardList = repository.findAll();
-        boardList.forEach(b -> System.out.println(b));
-
-        assertEquals(300, boardList.size());
-    }
+//    @Test
+//    @DisplayName("전체 게시물을 조회하고 반환된 리스트의 사이즈는 300이어야 한다.")
+//    void findAllTest() {
+//
+//        List<Board> boardList = repository.findAll();
+//        boardList.forEach(b -> System.out.println(b));
+//
+//        assertEquals(300, boardList.size());
+//    }
 
     @Test
     @DisplayName("특정 게시물을 조회하고 글제목이 일치해야 한다.")

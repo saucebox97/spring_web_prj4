@@ -4,6 +4,7 @@ import com.project.web_prj.board.domain.Board;
 import com.project.web_prj.board.service.BoardService;
 import com.project.web_prj.common.paging.Page;
 import com.project.web_prj.common.paging.PageMaker;
+import com.project.web_prj.common.search.Search;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Controller;
@@ -37,14 +38,14 @@ public class BoardController {
 
     // 게시물 목록 요청
     @GetMapping("/list")
-    public String list(Page page, Model model) {
-        log.info("controller request /board/list GET! - page: {}", page);
+    public String list(Search search, Model model) {
+        log.info("controller request /board/list GET! - page: {}", search);
     // 가져갈 종류가많기떄문에 Map으로 바꾸고 Object로 한다
-        Map<String, Object> boardMap = boardService.findAllService(page);
+        Map<String, Object> boardMap = boardService.findAllService(search);
         log.debug("return data - {}", boardMap);
 
-        // 페이지 정보 생성
-        PageMaker pm = new PageMaker(page, (Integer) boardMap.get("tc"));
+        // 페이지 정보 생성 // tc = totalCount
+        PageMaker pm = new PageMaker(new Page(search.getPageNum(), search.getAmount()), (Integer) boardMap.get("tc"));
 
         model.addAttribute("bList", boardMap.get("bList"));
         model.addAttribute("pm", pm);
@@ -54,11 +55,15 @@ public class BoardController {
 
     // 게시물 상세 조회 요청
     @GetMapping("/content/{boardNo}")
-    public String content(@PathVariable Long boardNo, Model model, HttpServletResponse response, HttpServletRequest request) {
+    public String content(@PathVariable Long boardNo
+            , Model model, HttpServletResponse response, HttpServletRequest request
+            , @ModelAttribute("p") Page page)
+    {
         log.info("controller request /board/content GET! - {}", boardNo);
         Board board = boardService.findOneService(boardNo, response, request);
         log.info("return data - {}", board);
         model.addAttribute("b", board);
+//        model.addAttribute("p", page); @ModelAttribute쓸거면 안써도됌
         return "board/board-detail";
     }
 
