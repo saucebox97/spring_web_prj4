@@ -19,41 +19,42 @@
             border-radius: 10px;
         }
 
+        /* 목록 개수별 보기 스타일 */
         .board-list .amount {
             display: flex;
             /* background: skyblue; */
-            /* 오른쪽 끝으로 보냄 */
-            justify-content: flex-end; 
-            list-style: none;
+            justify-content: flex-end;
         }
 
         .board-list .amount li {
             width: 8%;
             margin-right: 10px;
         }
-
         .board-list .amount li a {
             width: 100%;
         }
+
+
 
         header {
             background: #222;
             border-bottom: 1px solid #2c2c2c;
         }
 
-         /* pagination style */
-        /*나중에 설정한 값이 적용되지 않게 하려면 속성값 뒤에 !important를 붙입니다.  */
+
+        /* pagination style */
         .bottom-section {
             margin-top: -50px;
+            margin-bottom: 100px;
             display: flex;
         }
-        /* 비율 9 */
-        .bottom-section .nav {
-            flex: 9; 
+
+        .bottom-section nav {
+            flex: 9;
             display: flex;
             justify-content: center;
         }
-        /* 비율 1 */
+
         .bottom-section .btn-write {
             flex: 1;
         }
@@ -62,13 +63,33 @@
             color: #444 !important;
         }
 
-        .pagination-custom li.active a 
-        , .pagination-custom li:hover a{
+        .pagination-custom li.active a,
+        .pagination-custom li:hover a {
             background: #333 !important;
             color: #fff !important;
         }
-        
 
+        /* 검색창 */
+        .board-list .top-section {
+            display: flex;
+            justify-content: space-between;
+        }
+        .board-list .top-section .search {
+            flex: 4;
+        }
+        .board-list .top-section .amount {
+            flex: 4;
+        }
+        .board-list .top-section .search form {
+            display: flex;
+        }
+        .board-list .top-section .search form #search-type {
+            flex: 1;
+            margin-right: 10px;
+        }
+        .board-list .top-section .search form input[name=keyword] {
+            flex: 3;
+        }
 
     </style>
 </head>
@@ -81,10 +102,33 @@
 
         <div class="board-list">
 
-            <div class="amount"> 
-                <li><a class="btn btn-danger" href="/board/list?amount=10">10</a></li>
-                <li><a class="btn btn-danger" href="/board/list?amount=20">20</a></li>
-                <li><a class="btn btn-danger" href="/board/list?amount=30">30</a></li>
+            <div class="top-section">
+                <!-- 검색창 영역 -->
+                <div class="search">
+                    <form action="/board/list" method="get">
+                        
+                        <select class="form-select" name="type" id="search-type">
+                            <option value="title">제목</option>
+                            <option value="content">내용</option>
+                            <option value="writer">작성자</option>
+                            <option value="tc">제목+내용</option>
+                        </select>
+
+                        <input type="text" class="form-control" name="keyword" value="${s.keyword}">
+
+                        <button class="btn btn-primary" type="submit">
+                            <i class="fas fa-search"></i>
+                        </button>
+
+                    </form>
+                </div>
+
+                <!-- 목록 개수별 보기 영역 -->
+                <ul class="amount">
+                    <li><a class="btn btn-danger" href="/board/list?amount=10">10</a></li>
+                    <li><a class="btn btn-danger" href="/board/list?amount=20">20</a></li>
+                    <li><a class="btn btn-danger" href="/board/list?amount=30">30</a></li>
+                </ul>
             </div>
 
             <table class="table table-dark table-striped table-hover articles">
@@ -95,13 +139,18 @@
                     <th>조회수</th>
                     <th>작성시간</th>
                 </tr>
-<!-- td중 멀눌러도 tr가고 첫째자식불러들임 -->
-<!-- title 속성은 요소에 마우스를 포커스했을대의 설명을 지정 -->
+
                 <c:forEach var="b" items="${bList}">
                     <tr>
                         <td>${b.boardNo}</td>
                         <td>${b.writer}</td>
-                        <td title="${b.title}">${b.shortTitle}</td>
+                        <td title="${b.title}">
+                            ${b.shortTitle}
+                            <c:if test="${b.newArticle}">
+                                <span class="badge rounded-pill bg-danger">new</span>
+                            </c:if> 
+                            
+                        </td>
                         <td>${b.viewCnt}</td>
                         <td>${b.prettierDate}</td>
                     </tr>
@@ -114,26 +163,25 @@
                 <!-- 페이지 버튼 영역 -->
                 <nav aria-label="Page navigation example">
                     <ul class="pagination pagination-lg pagination-custom">
-
+                                                                                                <!-- &type=${s.type}&keyword=${s.keyword} 검색하고 페이지 유지 -->
                         <c:if test="${pm.prev}">
                             <li class="page-item"><a class="page-link"
-                                    href="/board/list?pageNum=${pm.beginPage - 1}&amount=${pm.page.amount}">prev</a></li>
+                                    href="/board/list?pageNum=${pm.beginPage - 1}&amount=${pm.page.amount}&type=${s.type}&keyword=${s.keyword}">prev</a></li>
                         </c:if>
-                            <!-- li에 붙여야 다른숫자붙여도 appendPage할수있음 -->
+
                         <c:forEach var="n" begin="${pm.beginPage}" end="${pm.endPage}" step="1">
                             <li data-page-num="${n}" class="page-item">
-                                <a class="page-link" href="/board/list?pageNum=${n}&amount=${pm.page.amount}">${n}</a>
+                                <a class="page-link" href="/board/list?pageNum=${n}&amount=${pm.page.amount}&type=${s.type}&keyword=${s.keyword}">${n}</a>
                             </li>
                         </c:forEach>
 
                         <c:if test="${pm.next}">
                             <li class="page-item"><a class="page-link"
-                                    href="/board/list?pageNum=${pm.endPage + 1}&amount=${pm.page.amount}">next</a></li>
+                                    href="/board/list?pageNum=${pm.endPage + 1}&amount=${pm.page.amount}&type=${s.type}&keyword=${s.keyword}">next</a></li>
                         </c:if>
 
                     </ul>
                 </nav>
-
 
                 <!-- 글쓰기 버튼 영역 -->
                 <div class="btn-write">
@@ -146,27 +194,29 @@
         <%@ include file="../include/footer.jsp" %>
 
     </div>
-<!-- td중 멀눌러도 tr가고 첫째자식불러들임 -->
-    <script>
 
+    <script>
         function alertServerMessage() {
             const msg = '${msg}';
-            console.log('msg: ', msg);
+            // console.log('msg: ', msg);
 
             if (msg === 'reg-success') {
                 alert('게시물이 정상 등록되었습니다.');
             }
         }
-        
-        function detailEvent() {
 
+
+        function detailEvent() {
             //상세보기 요청 이벤트
             const $table = document.querySelector(".articles");
+
             $table.addEventListener('click', e => {
+
+
                 if (!e.target.matches('.articles td')) return;
 
                 console.log('tr 클릭됨! - ', e.target);
-                //  td중 멀눌러도 tr가고 첫째자식불러들임 /부모에게갓다가 첫쨰에게 
+
                 let bn = e.target.parentElement.firstElementChild.textContent;
                 console.log('글번호: ' + bn);
 
@@ -174,7 +224,6 @@
                                 + "?pageNum=${pm.page.pageNum}"
                                 + "&amount=${pm.page.amount}";
             });
-
         }
 
         //현재 위치한 페이지에 active 스타일 부여하기
@@ -198,17 +247,27 @@
 
         }
 
+        // 옵션태그 고정
+        function fixSearchOption() {
+            const $select = document.getElementById('search-type');
+
+            for (let $opt of [...$select.children]) {
+                if ($opt.value === '${s.type}') {
+                    $opt.setAttribute('selected', 'selected');
+                    break;
+                }
+            }
+        }
+
 
         (function () {
 
             alertServerMessage();
             detailEvent();
             appendPageActive();
+            fixSearchOption();
 
         })();
-
-
-        
 
     </script>
 

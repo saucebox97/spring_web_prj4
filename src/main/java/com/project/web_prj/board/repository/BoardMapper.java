@@ -13,8 +13,13 @@ public interface BoardMapper {
 
     boolean save(Board board);
 
+    // 게시글 전체 조회
+    List<Board> findAll();
+
     // 게시글 전체 조회 with search
     List<Board> findAll(Page page);
+
+    // 게시글 전체 조회 with searching
     List<Board> findAll2(Search search);
 
     // 게시글 상세 조회
@@ -28,6 +33,7 @@ public interface BoardMapper {
 
     // 전체 게시물 수 조회
     int getTotalCount();
+    int getTotalCount2(Search search);
 
     // 조회수 상승 처리
     void upViewCount(Long boardNo);

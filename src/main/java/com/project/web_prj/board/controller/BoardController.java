@@ -38,7 +38,7 @@ public class BoardController {
 
     // 게시물 목록 요청
     @GetMapping("/list")
-    public String list(Search search, Model model) {
+    public String list(@ModelAttribute("s") Search search, Model model) {
         log.info("controller request /board/list GET! - page: {}", search);
     // 가져갈 종류가많기떄문에 Map으로 바꾸고 Object로 한다
         Map<String, Object> boardMap = boardService.findAllService(search);

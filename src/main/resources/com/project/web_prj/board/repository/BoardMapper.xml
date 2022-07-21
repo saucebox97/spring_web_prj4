@@ -15,6 +15,7 @@
         INSERT INTO tbl_board
         (board_no, writer, title, content)
         VALUES (seq_tbl_board.nextval, #{writer}, #{title}, #{content})
+
     </insert>
 
     <select id="findAll" resultMap="boardMap">
@@ -69,6 +70,18 @@
     <select id="getTotalCount" resultType="int">
         SELECT COUNT(*)
         FROM tbl_board
+    </select>
+<!-- tc = 제목+내용 -->
+    <select id="getTotalCount2" resultType="int">
+        SELECT COUNT(*)
+        FROM tbl_board
+        <if test="type == 'title'">WHERE title LIKE '%' || #{keyword} || '%'</if>
+        <if test="type == 'writer'">WHERE writer LIKE '%' || #{keyword} || '%'</if>
+        <if test="type == 'content'">WHERE content LIKE '%' || #{keyword} || '%'</if>
+        <if test="type == 'tc'">
+            WHERE title LIKE '%' || #{keyword} || '%'
+            OR content LIKE '%' || #{keyword} || '%'
+        </if>
     </select>
 
     <update id="upViewCount">

@@ -30,6 +30,9 @@
     <link rel="icon" href="/siteicon.ico">
     <link rel="apple-touch-icon" href="/siteicon.ico">
 
+    <!-- fontawesome css: https://fontawesome.com -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.8.2/css/all.min.css">
+
     <!-- reset css -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reset-css@5.0.1/reset.min.css">
 

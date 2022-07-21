@@ -22,6 +22,10 @@ public class Board {
     // 커스텀 데이터 필드
     private String shortTitle; // 줄임 제목
     private String prettierDate; // 변경된 날짜포맷 문자열
+    private boolean newArticle; // 신규게시물 여부
+
+
+
     // rs를 해야 repository에서 rs로짧게함
     public Board(ResultSet rs) throws SQLException {
         this.boardNo = rs.getLong("board_no");
