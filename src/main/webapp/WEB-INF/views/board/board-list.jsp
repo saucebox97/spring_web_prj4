@@ -220,7 +220,8 @@
                 let bn = e.target.parentElement.firstElementChild.textContent;
                 console.log('글번호: ' + bn);
 
-                location.href = '/board/content/' + bn 
+                location.href = '/board/content/' + bn
+                // 페이저정보를 기억하기위해 + 한다
                                 + "?pageNum=${pm.page.pageNum}"
                                 + "&amount=${pm.page.amount}";
             });
