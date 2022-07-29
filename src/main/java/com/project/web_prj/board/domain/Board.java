@@ -23,6 +23,7 @@ public class Board {
     private String shortTitle; // 줄임 제목
     private String prettierDate; // 변경된 날짜포맷 문자열
     private boolean newArticle; // 신규게시물 여부
+    private int replyCount; // 댓글 수
 
 
 

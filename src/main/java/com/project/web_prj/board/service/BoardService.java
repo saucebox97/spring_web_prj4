@@ -2,9 +2,8 @@ package com.project.web_prj.board.service;
 
 import com.project.web_prj.board.domain.Board;
 import com.project.web_prj.board.repository.BoardMapper;
-import com.project.web_prj.board.repository.BoardRepository;
-import com.project.web_prj.common.paging.Page;
 import com.project.web_prj.common.search.Search;
+import com.project.web_prj.reply.repository.ReplyMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
@@ -15,7 +14,6 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -27,12 +25,13 @@ import java.util.Map;
 public class BoardService {
 
 //    private final BoardRepository repository;
-    private final BoardMapper repository;
+    private final BoardMapper boardMapper; // 쉬프트 f6 하면 바꾸고자하는이름 다바뀜
+    private final ReplyMapper replyMapper;
 
     // 게시물 등록 요청 중간 처리
     public boolean saveService(Board board) {
         log.info("save service start - {}", board);
-        return repository.save(board);
+        return boardMapper.save(board);
     }
 
     // 게시물 전체 조회 요청 중간 처리
@@ -52,12 +51,12 @@ public class BoardService {
 
         Map<String, Object> findDataMap = new HashMap<>();
 
-        List<Board> boardList = repository.findAll2(search);
+        List<Board> boardList = boardMapper.findAll2(search);
         // 목록 중간 데이터 처리
         processConverting(boardList);
 
         findDataMap.put("bList", boardList);
-        findDataMap.put("tc", repository.getTotalCount2(search));
+        findDataMap.put("tc", boardMapper.getTotalCount2(search));
 
         return findDataMap;
     }
@@ -68,8 +67,14 @@ public class BoardService {
             convertDateFormat(b); // 날짜
             substringTitle(b); // 5글자초과 ...
             checkNewArticle(b);
+            setReplyCount(b);
         }
     }
+
+    private void setReplyCount(Board b) {
+        b.setReplyCount(replyMapper.getReplyCount(b.getBoardNo()));
+    }
+
 
     // 신규 게시물 여부 처리
     private void checkNewArticle(Board b) {
@@ -117,7 +122,7 @@ public class BoardService {
     @Transactional
     public Board findOneService(Long boardNo, HttpServletResponse response, HttpServletRequest request) {
         log.info("findOne service start - {}", boardNo);
-        Board board = repository.findOne(boardNo);
+        Board board = boardMapper.findOne(boardNo);
 
         // 해당 게시물 번호에 해당하는 쿠키가 있는지 확인
         // 쿠키가 없으면 조회수를 상승시켜주고 쿠키를 만들어서 클라이언트에 전송
@@ -132,7 +137,7 @@ public class BoardService {
         Cookie foundCookie = WebUtils.getCookie(request, "b" + boardNo);
 
         if (foundCookie == null) {
-            repository.upViewCount(boardNo);
+            boardMapper.upViewCount(boardNo);
 
             Cookie cookie = new Cookie("b" + boardNo, String.valueOf(boardNo));// 쿠키 생성
             cookie.setMaxAge(60); // 쿠키 수명 설정
@@ -144,14 +149,19 @@ public class BoardService {
 
 
     // 게시물 삭제 요청 중간 처리
+    @Transactional // 둘다 성공해야 처리가됌 1개만성공하면 롤백됌
     public boolean removeService(Long boardNo) {
         log.info("remove service start - {}", boardNo);
-        return repository.remove(boardNo);
+
+        // 댓글 먼저 모두 삭제
+        replyMapper.removeAll(boardNo);
+        // 원본 게시물 삭제
+        return boardMapper.remove(boardNo);
     }
 
     // 게시물 수정 요청 중간 처리
     public boolean modifyService(Board board) {
         log.info("modify service start - {}", board);
-        return repository.modify(board);
+        return boardMapper.modify(board);
     }
 }

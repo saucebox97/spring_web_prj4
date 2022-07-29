@@ -145,7 +145,7 @@
                         <td>${b.boardNo}</td>
                         <td>${b.writer}</td>
                         <td title="${b.title}">
-                            ${b.shortTitle}
+                            ${b.shortTitle} [${b.replyCount}]
                             <c:if test="${b.newArticle}">
                                 <span class="badge rounded-pill bg-danger">new</span>
                             </c:if> 
