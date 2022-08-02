@@ -57,7 +57,7 @@ public class FileUtils {
         File f = new File(newUploadPath, newFileName);
 
         try {
-            file.transferTo(f); // 폴더저장
+            file.transferTo(f); // 그 폴더에 그 파일명으로 폴더저장
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -71,7 +71,7 @@ public class FileUtils {
         // uploadPath => E:/sl_test/upload
         String responsFilePath = fileFullPath.substring(uploadPath.length());
 
-        return responsFilePath.replace("\\", "/");
+        return responsFilePath.replace("\\", "/"); // 문제가생길수있기에 바꿈
     }
 
     /**

@@ -5,6 +5,7 @@ import lombok.*;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
+import java.util.List;
 
 @Setter @Getter @ToString @EqualsAndHashCode
 @NoArgsConstructor @AllArgsConstructor
@@ -24,6 +25,8 @@ public class Board {
     private String prettierDate; // 변경된 날짜포맷 문자열
     private boolean newArticle; // 신규게시물 여부
     private int replyCount; // 댓글 수
+
+    private List<String> fileNames; // 첨부파일들의 이름 목록 /여러개가올수있어서 list
 
 
 

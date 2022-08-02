@@ -29,8 +29,21 @@ public class BoardService {
     private final ReplyMapper replyMapper;
 
     // 게시물 등록 요청 중간 처리
+    @Transactional
     public boolean saveService(Board board) {
         log.info("save service start - {}", board);
+
+        // 게시물 내용 DB에 저장
+        boolean flag = boardMapper.save(board);
+
+        List<String> fileNames = board.getFileNames();
+        if (fileNames != null && fileNames.size() > 0) {
+            for (String fileName : fileNames) { // 파일이 여러개이기떄문에 돌려야함
+                // 첨부파일 내용 DB에 저장
+                boardMapper.addFile(fileName);
+            }
+        }
+
         return boardMapper.save(board);
     }
 
@@ -163,5 +176,10 @@ public class BoardService {
     public boolean modifyService(Board board) {
         log.info("modify service start - {}", board);
         return boardMapper.modify(board);
+    }
+
+    // 첨부파일 목록 가져오는 중간처리
+    public List<String> getFiles(Long bno) {
+        return boardMapper.findFileNames(bno);
     }
 }

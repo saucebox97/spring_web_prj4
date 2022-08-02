@@ -85,9 +85,26 @@
                 if (isImageFile(originFileName)) { // 파일의 이미지라면
                     const $img = document.createElement('img');
                     $img.classList.add('img-sizing');
-                    $img.setAttribute('src', '/loadFile?fileName=' + fileName); // 풀경로 /98줄
+                    $img.setAttribute('src', '/loadFile?fileName=' + fileName); // 풀경로 컨트롤러/98줄
                     $img.setAttribute('alt', originFileName); // 풀경로에서 원본파일이름만뽑음
                     $('.uploaded-list').append($img);
+                }
+                // 이미지가 아니라면 다운로드 링크를 생성
+                else {
+
+                    const $a = document.createElement('a');
+                    $a.setAttribute('href', '/loadFile?fileName=' + fileName) // loadFile하면 byte배열보내줌
+
+                    const $img = document.createElement('img');
+                    $img.classList.add('img-sizing');
+                    $img.setAttribute('src', '/img/file_icon.jpg'); 
+                    $img.setAttribute('alt', originFileName); 
+
+                    $a.append($img);
+                    $a.innerHTML += '<span>' + originFileName + '</span>';
+
+                    $('.uploaded-list').append($a);
+
                 }
 
             }
@@ -135,8 +152,8 @@
                 // console.log('drop file data: ', files);
 
                 // 2. 읽은 파일 데이터를 input[type-file]태그에 저장 / 59줄
-                const $fileInput = $('#ajax-file');
-                $fileInput.prop('files', files); // input에 파일정보를 담는다
+                const $fileInput = $('#ajax-file'); 
+                $fileInput.prop('files', files); // input에 파일정보를 담는다 /form태그라생각
 
                 // console.log($fileInput);
 
@@ -145,7 +162,7 @@
 
                  // 4. 전송할 파일들을 전부 FormData안에 포장
                  for (let file of $fileInput[0].files) {
-                    formData.append('files', file); //controller 76줄에 감
+                    formData.append('files', file); 
                 }
 
                 // 5. 비동기 요청 전송
@@ -156,12 +173,12 @@
                     //     'content-type': 'multipart/form-data'
                     // }
                 }
-                fetch('/ajax-upload', reqInfo)
+                fetch('/ajax-upload', reqInfo) //controller 76줄에 감 reqInfo안에있는 formData안에있는 file이
                     .then(res => {
                         // console.log(res.status);
                         return res.json();
                     })
-                    .then(fileNames => { // 컨트롤러에서 파일보냄
+                    .then(fileNames => { // 컨트롤러에서 파일보냄 res.json()가 fileNames
                         console.log(fileNames);
 
                         showFileData(fileNames);

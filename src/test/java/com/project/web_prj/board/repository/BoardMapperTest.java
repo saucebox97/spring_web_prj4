@@ -63,4 +63,17 @@ class BoardMapperTest {
 //        mapper.findAll2(search).forEach(System.out::println);
 //    }
 
+    @Test@DisplayName("특정 게시물에 첨부된 파일경로들을 조회한다.")
+    void findFileNamesTest() {
+        //given
+        Long bno = 331L;
+
+        //when
+        List<String> fileNames = mapper.findFileNames(bno);
+
+        //then
+        fileNames.forEach(System.out::println);
+        assertEquals(2, fileNames.size());
+    }
+
 }

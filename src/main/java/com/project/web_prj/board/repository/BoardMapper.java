@@ -38,4 +38,9 @@ public interface BoardMapper {
     // 조회수 상승 처리
     void upViewCount(Long boardNo);
 
+    // 파일 정부 기능 처리
+    void addFile(String fileName);
+
+    // 게시물에 붙어있는 첨부파일경로명 전부 조회하기
+    List<String> findFileNames(Long bno);
 }

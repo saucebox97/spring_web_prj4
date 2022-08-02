@@ -90,4 +90,20 @@
         WHERE board_no=#{boardNo}
     </update>
 
+    <!--  첨부파일 추가  / currval 은 nextval보다 1작음 / nextval호출하면 (currval,next)1씩증가 currval은 호출해도 1씩증가안함-->
+    <insert id="addFile">
+
+        INSERT INTO file_upload
+            (file_name, bno)
+        VALUES
+            (#{fileName}, seq_tbl_board.currval)
+
+    </insert>
+
+    <select id="findFileNames" resultType="string">
+        SELECT file_name
+        FROM file_upload
+        WHERE bno = #{bno}
+    </select>
+
 </mapper>
