@@ -42,10 +42,11 @@
         <div class="write-container">
 
             <form id="write-form" action="/board/write" method="post" autocomplete="off" enctype="multipart/form-data">
-
+                <!-- readonly = 읽기전용 -->
                 <div class="mb-3">
                     <label for="writer-input" class="form-label">작성자</label>
-                    <input type="text" class="form-control" id="writer-input" placeholder="이름" name="writer">
+                    <input type="text" class="form-control" id="writer-input" placeholder="이름" name="writer"
+                    maxlength="20" readonly value="${loginUser.name}"> 
                 </div>
                 <div class="mb-3">
                     <label for="title-input" class="form-label">글제목</label>
