@@ -1,6 +1,7 @@
 package com.project.web_prj.board.repository;
 
 import com.project.web_prj.board.domain.Board;
+import com.project.web_prj.board.dto.ValidateMemberDTO;
 import com.project.web_prj.common.paging.Page;
 import com.project.web_prj.common.search.Search;
 import org.junit.jupiter.api.DisplayName;
@@ -74,6 +75,22 @@ class BoardMapperTest {
         //then
         fileNames.forEach(System.out::println);
         assertEquals(2, fileNames.size());
+    }
+
+    @Test
+    @DisplayName("게시물 번호로 글쓴이의 계정명과 권한정보르 가져와야 한다.")
+    void findMemberTest() {
+
+        //given
+        Long boardNo = 335L;
+
+        //when
+        ValidateMemberDTO member = mapper.findMemberByBoardNo(boardNo);
+
+        //then
+        System.out.println("member = " + member);
+        assertEquals("peach", member.getAccount());
+        assertEquals("ADMIN", member.getAuth().toString());
     }
 
 }

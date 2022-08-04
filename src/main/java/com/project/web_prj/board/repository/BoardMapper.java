@@ -2,8 +2,10 @@ package com.project.web_prj.board.repository;
 
 
 import com.project.web_prj.board.domain.Board;
+import com.project.web_prj.board.dto.ValidateMemberDTO;
 import com.project.web_prj.common.paging.Page;
 import com.project.web_prj.common.search.Search;
+import com.project.web_prj.member.domain.Member;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -43,4 +45,8 @@ public interface BoardMapper {
 
     // 게시물에 붙어있는 첨부파일경로명 전부 조회하기
     List<String> findFileNames(Long bno);
+
+
+    // 게시물 번호로 게시글 작성자의 계정명과 권한 가져오기
+    ValidateMemberDTO findMemberByBoardNo(Long boardNo);
 }

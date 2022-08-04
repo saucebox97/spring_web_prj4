@@ -10,14 +10,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+
+import static com.project.web_prj.util.LoginUtils.*;
 
 @Controller
 @Log4j2
@@ -54,8 +54,8 @@ public class MemberController {
     }
 
     // 로그인 화면을 열어주는 요청처리
-    @GetMapping("/sign-in") // url이랑 파일경로가똑같아서 void로해도됌
-    public void signIn(HttpServletRequest request) {
+    @GetMapping("/sign-in") // url이랑 파일경로가똑같아서 void로해도됌 /boardinterceptor에서 로그인안됏을떄 message에 no-login이 담김
+    public void signIn(@ModelAttribute("message") String message, HttpServletRequest request) {
         log.info("/member/sign-in GET! - forwarding to sign-in.jsp");
 
         // 요청 정보 헤더 안에는 Referer라는 키가 있는데
@@ -71,13 +71,14 @@ public class MemberController {
     public String signIn(LoginDTO inputData
             , Model model
             , HttpSession session // 세션정보 객체
+            , HttpServletResponse response
     ) {
 
         log.info("/member/sign-in POST - {}", inputData);
 //        log.info("session timeout : {}", session.getMaxInactiveInterval());/기본값 30분
 
         // 로그인 서비스 호출
-        LoginFlag flag = memberService.login(inputData, session);
+        LoginFlag flag = memberService.login(inputData, session, response);
 
         if (flag == LoginFlag.SUCCESS) {
             log.info("login success!!");
@@ -85,16 +86,24 @@ public class MemberController {
             return "redirect:" + redirectURI; // 로그인후 페이지
         }
         model.addAttribute("loginMsg", flag);
-        return "redirect:/member/sign-in";
+        return "member/sign-in";
 
     }
 
     @GetMapping("/sign-out")
-    public String signOut(HttpSession session) {
+    public String signOut(HttpServletRequest request, HttpServletResponse response) {
 
-        if (session.getAttribute("loginUser") != null) {
-            // 1. 세션에서 정보르 삭제한다.
-            session.removeAttribute("loginUser");
+        HttpSession session = request.getSession();
+
+        if (isLogin(session)) {
+
+            // 만약 자동로그인 상태라면 해체한다.
+            if (hasAutoLoginCookie(request)) {
+                memberService.autoLogout(getCurrentMemberAccount(session), request, response);
+            }
+
+            // 1. 세션에서 정보를 삭제한다.
+            session.removeAttribute(LOGIN_FLAG);
             // 2. 세션을 무료화한다.
             session.invalidate();
             return "redirect:/";

@@ -13,8 +13,8 @@
 
     <insert id="save">
         INSERT INTO tbl_board
-        (board_no, writer, title, content)
-        VALUES (seq_tbl_board.nextval, #{writer}, #{title}, #{content})
+        (board_no, writer, title, content, account)
+        VALUES (seq_tbl_board.nextval, #{writer}, #{title}, #{content}, #{account})
 
     </insert>
 
@@ -104,6 +104,18 @@
         SELECT file_name
         FROM file_upload
         WHERE bno = #{bno}
+    </select>
+
+    <select id="findMemberByBoardNo" resultType="com.project.web_prj.board.dto.ValidateMemberDTO">
+
+        SELECT account, auth
+        FROM tbl_member
+        WHERE account = (
+                            SELECT account
+                            FROM tbl_board
+                            WHERE board_no = #{boardNo}
+                        )
+
     </select>
 
 </mapper>

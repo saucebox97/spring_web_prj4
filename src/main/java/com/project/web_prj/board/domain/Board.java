@@ -18,6 +18,7 @@ public class Board {
     private String content;
     private Long viewCnt; // 10자리수니까 100억 그러니 long
     private Date regDate;
+    private String account;
 
 
     // 커스텀 데이터 필드

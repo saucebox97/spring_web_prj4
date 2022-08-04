@@ -5,6 +5,7 @@ import com.project.web_prj.board.service.BoardService;
 import com.project.web_prj.common.paging.Page;
 import com.project.web_prj.common.paging.PageMaker;
 import com.project.web_prj.common.search.Search;
+import com.project.web_prj.util.LoginUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
@@ -44,13 +45,15 @@ public class BoardController {
     // 게시물 목록 요청
     @GetMapping("/list")
     public String list(@ModelAttribute("s") Search search, Model model) {
-        log.info("controller request /board/list GET! - page: {}", search);
-    // 가져갈 종류가많기떄문에 Map으로 바꾸고 Object로 한다
+        log.info("controller request /board/list GET! - search: {}", search);
+
         Map<String, Object> boardMap = boardService.findAllService(search);
         log.debug("return data - {}", boardMap);
 
-        // 페이지 정보 생성 // tc = totalCount
-        PageMaker pm = new PageMaker(new Page(search.getPageNum(), search.getAmount()), (Integer) boardMap.get("tc"));
+        // 페이지 정보 생성
+        PageMaker pm = new PageMaker(
+                new Page(search.getPageNum(), search.getAmount())
+                , (Integer) boardMap.get("tc"));
 
         model.addAttribute("bList", boardMap.get("bList"));
         model.addAttribute("pm", pm);
@@ -76,10 +79,10 @@ public class BoardController {
     @GetMapping("/write")
     public String write(HttpSession session, RedirectAttributes ra) {
 
-        if (session.getAttribute("loginUser") == null) {
-            ra.addFlashAttribute("warningMsg", "forbidden");
-            return "redirect:/member/sign-in";
-        }
+//        if (session.getAttribute("loginUser") == null) {
+//            ra.addFlashAttribute("warningMsg", "forbidden");
+//            return "redirect:/member/sign-in";
+//        }
 
         log.info("controller request /board/write GET!");
         return "board/board-write";
@@ -89,7 +92,8 @@ public class BoardController {
     @PostMapping("/write") // oard-write65줄에서 files라는이름으로옴
     public String write(Board board,
                         @RequestParam("files") List<MultipartFile> fileList,
-                        RedirectAttributes ra) {
+                        RedirectAttributes ra,
+                        HttpSession session) {
         log.info("controller request /board/write POST! - {}", board);
 
 //        if (fileList != null) {
@@ -102,6 +106,9 @@ public class BoardController {
 //            board.setFileNames(fileNames);
 //        }
 
+        // 현재 로그인 사용자 계정명 추가
+        board.setAccount(LoginUtils.getCurrentMemberAccount(session));
+
         boolean flag = boardService.saveService(board);
         // 모델은 포워딩할때 리다이렉트할떄는 RedirectAttributes
         // 게시물 등록에 성공하면 클라이언트에 성공메시지를 전송/리퀘스트에받은거이기때문에 리다이렉트하면 사라짐
@@ -110,12 +117,23 @@ public class BoardController {
         return flag ? "redirect:/board/list" : "redirect:/";
     }
 
-    // 게시물 삭제 요청
+    // 게시물 삭제 확인 요청
     @GetMapping("/delete")
-    public String delete(Long boardNo) {
+    public String delete(@ModelAttribute("boardNo") Long boardNo, Model model) {
+
         log.info("controller request /board/delete GET! - bno: {}", boardNo);
-        return boardService.removeService(boardNo)
-                ? "redirect:/board/list" : "redirect:/";
+
+        model.addAttribute("validate", boardService.getMember(boardNo));
+
+        return "board/process-delete";
+    }
+
+    // 게시물 삭제 확정 요청
+    @PostMapping("/delete")
+    public String delete(Long boardNo) {
+        log.info("controller request /board/delete POST! - bno: {}", boardNo);
+
+        return boardService.removeService(boardNo) ? "redirect:/board/list" : "redirect:/";
     }
 
     // 수정 화면 요청
@@ -126,6 +144,8 @@ public class BoardController {
         log.info("find article: {}", board);
 
         model.addAttribute("board", board);
+        model.addAttribute("validate", boardService.getMember(boardNo));
+
         return "board/board-modify";
     }
 
@@ -139,7 +159,7 @@ public class BoardController {
 
     // 특정 게시물에 붙은 첨부파일경로 리스트를 클라이언트에게 비동기 전송
     @GetMapping("/file/{bno}")
-    @ResponseBody // 비동기니까
+    @ResponseBody
     public ResponseEntity<List<String>> getFiles(@PathVariable Long bno) {
 
         List<String> files = boardService.getFiles(bno);

@@ -1,6 +1,7 @@
 package com.project.web_prj.board.service;
 
 import com.project.web_prj.board.domain.Board;
+import com.project.web_prj.board.dto.ValidateMemberDTO;
 import com.project.web_prj.board.repository.BoardMapper;
 import com.project.web_prj.common.search.Search;
 import com.project.web_prj.reply.repository.ReplyMapper;
@@ -44,21 +45,21 @@ public class BoardService {
             }
         }
 
-        return boardMapper.save(board);
+        return flag;
     }
 
-    // 게시물 전체 조회 요청 중간 처리
-//    public List<Board> findAllService() {
-//        log.info("findAll service start");
-//        List<Board> boardList = repository.findAll.getTotalCount();
-//
-//        // 목록 중간 데이터처리
-//        processConverting(boardList);
-//
-//        return boardList;
-//    }
+     // 게시물 전체 조회 요청 중간 처리
+    public List<Board> findAllService() {
+        log.info("findAll service start");
+        List<Board> boardList = boardMapper.findAll();
 
-    // 게시물 전체 조회 요청 중간 처리 with paging
+        // 목록 중간 데이터처리
+        processConverting(boardList);
+
+        return boardList;
+    }
+
+    // 게시물 전체 조회 요청 중간 처리 with searching
     public Map<String, Object> findAllService(Search search) {
         log.info("findAll service start");
 
@@ -181,5 +182,10 @@ public class BoardService {
     // 첨부파일 목록 가져오는 중간처리
     public List<String> getFiles(Long bno) {
         return boardMapper.findFileNames(bno);
+    }
+
+    // 게시물 번호로 글쓴이 회원정보 가져오기
+    public ValidateMemberDTO getMember(Long boardNo) {
+        return boardMapper.findMemberByBoardNo(boardNo);
     }
 }

@@ -86,3 +86,6 @@ CREATE TABLE tbl_member (
 
 
 SELECT * FROM tbl_member;
+
+ALTER TABLE tbl_board ADD account VARCHAR2(50) NOT NULL;
+ALTER TABLE tbl_reply ADD account VARCHAR2(50) NOT NULL;

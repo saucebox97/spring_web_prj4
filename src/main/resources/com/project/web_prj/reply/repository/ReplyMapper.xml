@@ -15,9 +15,9 @@
 
     <insert id="save">
         INSERT INTO tbl_reply
-        (reply_no, reply_text, reply_writer, board_no)
+        (reply_no, reply_text, reply_writer, board_no, account)
         VALUES
-        (seq_tbl_reply.nextval, #{replyText}, #{replyWriter}, #{boardNo})
+        (seq_tbl_reply.nextval, #{replyText}, #{replyWriter}, #{boardNo}, #{account})
     </insert>
 
     <!--  댓글 수정  -->
@@ -54,7 +54,7 @@
                 SELECT *
                 FROM tbl_reply
                 WHERE board_no = #{boardNo}
-                ORDER BY board_no DESC
+                ORDER BY reply_no
             ) v_reply
         )
         WHERE rn BETWEEN (#{page.pageNum} - 1) * #{page.amount} + 1 AND (#{page.pageNum} * #{page.amount})
