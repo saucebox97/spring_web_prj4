@@ -29,7 +29,7 @@ public class AutoLoginInterceptor implements HandlerInterceptor {
         if (c != null) {
             String sessionId = c.getValue();
 
-            //3. 쿠키에 저장된 세션아이디와 같은 값을 가진 화원정보 조회
+            //3. 쿠키에 저장된 세션아이디와 같은 값을 가진 화원정보 조회 / memberMapper.xml 54줄 findMemberBySessionId에서 비교
             Member member = memberMapper.findMemberBySessionId(sessionId);
 
             if (member != null) {
