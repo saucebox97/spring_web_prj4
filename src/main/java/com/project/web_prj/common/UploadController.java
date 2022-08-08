@@ -52,8 +52,6 @@ public class UploadController {
 
             // 서버에 업로드파일 저장
 
-
-
             // 1. 세이브파일 객체 생성
             // -  첫번째 파라미터는 파일 저장경로 지정, 두번째 파일명지정하기위해쓰는 코드
 //        File f = new File(uploadPath, file.getOriginalFilename());

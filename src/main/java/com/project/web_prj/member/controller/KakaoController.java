@@ -56,7 +56,8 @@ public class KakaoController {
             session.setAttribute("profile_path", userInfo.getProfileImg()); // kakao-test.jsp 43줄에 넣을려고
             session.setAttribute(LOGIN_FROM, KAKAO);
             session.setAttribute("accessToekn", accessToken); // 로그아웃에넣어줄토큰
-            return "redirect:/kakao-test";
+
+            return "redirect:/";
 
         }
 

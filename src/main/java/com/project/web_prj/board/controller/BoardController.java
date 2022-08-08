@@ -5,6 +5,7 @@ import com.project.web_prj.board.service.BoardService;
 import com.project.web_prj.common.paging.Page;
 import com.project.web_prj.common.paging.PageMaker;
 import com.project.web_prj.common.search.Search;
+import com.project.web_prj.util.FileUtils;
 import com.project.web_prj.util.LoginUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -22,6 +23,7 @@ import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
 
 /**
  * 게시물 목록요청: /board/list: GET
@@ -41,6 +43,8 @@ import java.util.Map;
 public class BoardController {
 
     private final BoardService boardService;
+
+    private static final String UPLOAD_PATH = "E:\\sl_test\\upload";
 
     // 게시물 목록 요청
     @GetMapping("/list")
@@ -89,12 +93,36 @@ public class BoardController {
     }
 
     // 게시물 등록 요청
-    @PostMapping("/write") // oard-write65줄에서 files라는이름으로옴
+    @PostMapping("/write") // board-write65줄에서 files라는이름으로옴
     public String write(Board board,
                         @RequestParam("files") List<MultipartFile> fileList,
                         RedirectAttributes ra,
                         HttpSession session) {
         log.info("controller request /board/write POST! - {}", board);
+
+        log.info("/upload POST! - {}", fileList);
+
+        for (MultipartFile file: fileList) {
+            log.info("file-name: {}", file.getName());
+            log.info("file-origin-name: {}", file.getOriginalFilename());
+            log.info("file-size: {}KB", (double) file.getSize() / 1024);
+            log.info("file-type: {}", file.getContentType());
+            System.out.println("=============================================");
+
+            // 서버에 업로드파일 저장
+
+            // 1. 세이브파일 객체 생성
+            // -  첫번째 파라미터는 파일 저장경로 지정, 두번째 파일명지정하기위해쓰는 코드
+//        File f = new File(uploadPath, file.getOriginalFilename());
+//
+//        try {
+//            file.transferTo(f); // 파일업로드폴더에저장 코드
+//        } catch (IOException e) {
+//            e.printStackTrace(); // 예외 결과를 화면에 출력함
+//        }
+
+            FileUtils.uploadFile(file, UPLOAD_PATH);
+        }
 
 //        if (fileList != null) {
 //            List<String> fileNames = new ArrayList<>();

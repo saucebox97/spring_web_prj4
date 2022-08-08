@@ -32,6 +32,10 @@
             width: 100px;
             height: 100px;
         }
+        
+        .submit {
+            border: 1px solid #000;
+        }
     </style>
 </head>
 
@@ -62,6 +66,12 @@
                     <div class="fileDrop">
                         <span>Drop Here!!</span>
                     </div>
+
+                    <form action="/upload" method="post" enctype="multipart/form-data">
+                        <input class="fileOpen" type="file" name="files" multiple>
+                        <button class ="submit" type="submit">업로드</button>
+                    </form>
+
                     <div class="uploadDiv">
                         <input type="file" name="files" id="ajax-file" style="display:none;">
                     </div>
@@ -70,6 +80,8 @@
 
                     </div>
                 </div>
+
+                
 
                 <div class="d-grid gap-2">
                     <button id="reg-btn" class="btn btn-dark" type="button">글 작성하기</button>
@@ -183,7 +195,7 @@
 
             }
 
-            // 드롭한 파일
+            // 바꾼 파일
             function showFileData(fileNames) {
 
                 // 이미지인지? 이미지가 아닌지에 따라 구분하여 처리
@@ -192,6 +204,56 @@
                     checkExtType(fileName);
                 }
             }
+
+            // Open 이벤트
+            const $OpenBox = $('.fileOpen');
+
+            console.log($OpenBox);
+
+            // Open 열기 이벤트
+            $OpenBox.on("change", e => {
+                // e.preventDefault(); // 기본기능방지
+
+                console.log($OpenBox); // 여기까지됌 346
+
+                const files = $OpenBox[0].files;
+                console.log(files);
+
+                // 2. 읽은 파일 데이터를 input[type-file]태그에 저장 / 59줄
+                const $fileInput = $('#ajax-file');
+                $fileInput.prop('files', files); // input에 파일정보를 담는다 /form태그라생각
+
+                // console.log($fileInput);
+
+                // 3. 파일 데이터를 비동기 전송하기 위해서는 FormData객체가 필요
+                const formData = new FormData();
+
+                // 4. 전송할 파일들을 전부 FormData안에 포장
+                for (let file of $fileInput[0].files) {
+                    formData.append('files', file); //controller 76줄에 감
+                }
+
+                // 5. 비동기 요청 전송
+                const reqInfo = {
+                    method: 'POST',
+                    body: formData
+                    // headers: { / form-data는 기본값이라서 굳이안써도됌
+                    //     'content-type': 'multipart/form-data'
+                    // }
+                }
+                fetch('/ajax-upload', reqInfo)
+                    .then(res => {
+                        // console.log(res.status);
+                        return res.json();
+                    })
+                    .then(fileNames => { // 컨트롤러에서 파일보냄 res.json()가 fileNames
+                        console.log(fileNames);
+
+                        showFileData(fileNames);
+                    });
+
+            })
+            
 
             // drag & drop 이벤트
             const $dropBox = $('.fileDrop');
@@ -220,10 +282,10 @@
                 // 드롭된 파일 정보를 서버로 전송
 
                 // 1. 드롭된 파일 데이터 읽기
-                // console.log(e);
+                console.log(e);
 
                 const files = e.originalEvent.dataTransfer.files;
-                // console.log('drop file data: ', files);
+                console.log('drop file data: ', files);
 
                 // 2. 읽은 파일 데이터를 input[type-file]태그에 저장 / 59줄
                 const $fileInput = $('#ajax-file');
