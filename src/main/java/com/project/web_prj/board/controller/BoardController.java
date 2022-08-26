@@ -93,14 +93,14 @@ public class BoardController {
     }
 
     // 게시물 등록 요청
-    @PostMapping("/write") // board-write65줄에서 files라는이름으로옴
+    @PostMapping("/write") // board-write72줄(업로드누르면) ,77줄(작성하기누르면)에서 files라는이름으로옴
     public String write(Board board,
                         @RequestParam("files") List<MultipartFile> fileList,
                         RedirectAttributes ra,
                         HttpSession session) {
-        log.info("controller request /board/write POST! - {}", board);
+        log.info("101 controller request /board/write POST! - {}", board);
 
-        log.info("/upload POST! - {}", fileList);
+        log.info("103 /upload POST! - {}", fileList); // 여기에 파일이들어오는지
 
         for (MultipartFile file: fileList) {
             log.info("file-name: {}", file.getName());

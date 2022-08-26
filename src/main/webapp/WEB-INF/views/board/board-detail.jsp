@@ -421,6 +421,8 @@
 
             const $writerInput = document.getElementById('newReplyWriter');
             const $contentInput = document.getElementById('newReplyText');
+            console.log($writerInput); // 551
+            console.log($contentInput); // 552
 
             // 서버로 전송할 데이터들
             const replyData = {
@@ -457,7 +459,11 @@
         // 댓글 수정화면 열기 상세처리
         function processModifyShow(e, rno) {
 
-            // console.log('수정버튼 클릭함!! after');
+            console.log('수정버튼 클릭함!! after');
+            console.log(e.target);
+            console.log(e.target.parentElement);
+            console.log(e.target.parentElement.parentElement);
+            console.log(e.target.parentElement.parentElement.firstElementChild);
 
             // 클릭한 버튼 근처에 있는 댓글 내용텍스트를 얻어온다.
             const replyText = e.target.parentElement.parentElement.firstElementChild.textContent;

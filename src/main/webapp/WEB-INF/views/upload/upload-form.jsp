@@ -79,7 +79,7 @@
             function checkExtType(fileName) {
 
                 // 원본 파일 명 추출
-                let originFileName = fileName.substring(fileName.indexOf("_") +1 );
+                let originFileName = fileName.substring(fileName.indexOf("_" + 1));
 
                 // 확장자 추출후 이미지인지까지 확인
                 if (isImageFile(originFileName)) { // 파일의 이미지라면

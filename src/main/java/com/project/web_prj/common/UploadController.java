@@ -41,13 +41,13 @@ public class UploadController {
     // ex) 원본 파일명, 파일 용량, 파일 컨텐츠타입
     @PostMapping("/upload")// name = file 로 받아서 file 로해야함
     public String upload(@RequestParam("file") List<MultipartFile> fileList) {
-        log.info("/upload POST! - {}", fileList);
+        log.info("44 /upload POST! - {}", fileList);
 
         for (MultipartFile file: fileList) {
-            log.info("file-name: {}", file.getName());
-            log.info("file-origin-name: {}", file.getOriginalFilename());
-            log.info("file-size: {}KB", (double) file.getSize() / 1024);
-            log.info("file-type: {}", file.getContentType());
+            log.info("47 file-name: {}", file.getName());
+            log.info("48 file-origin-name: {}", file.getOriginalFilename());
+            log.info("49 file-size: {}KB", (double) file.getSize() / 1024);
+            log.info("50 file-type: {}", file.getContentType());
             System.out.println("=============================================");
 
             // 서버에 업로드파일 저장
@@ -70,10 +70,10 @@ public class UploadController {
 
     // 비동기 요청 파일 업로드 처리
     @PostMapping("/ajax-upload")
-    @ResponseBody // files로 넘어옴  165줄 ResponseEntity를하는이유 헤더정보를담을수잇음 못담아도해야함
+    @ResponseBody // files로 넘어옴  102줄 ResponseEntity를하는이유 헤더정보를담을수잇음 못담아도해야함
     public ResponseEntity<List<String>> ajaxUpload(List<MultipartFile> files) {
 
-        log.info("/ajax0upload POST! = {}", files.get(0).getOriginalFilename());
+        log.info("/ajax-upload POST! = {}", files.get(0).getOriginalFilename()); // 이미지비동기하면 바로 로드찍힘
 
         // 클라이언트에게 전송할 파일경로 리스트
         List<String> fileNames = new ArrayList<>();
@@ -84,7 +84,7 @@ public class UploadController {
             fileNames.add(fullPath);
         }
 
-        return new ResponseEntity<>(fileNames, HttpStatus.OK); // upload-form fetch에보냄 181줄
+        return new ResponseEntity<>(fileNames, HttpStatus.OK); // upload-form fetch에보냄 118줄
     }
 
     // 파일 데이터 로드 요청 처리
@@ -97,7 +97,7 @@ public class UploadController {
     @ResponseBody
     // fileName = /2022/08/01/변환된 파일명
     public ResponseEntity<byte[]> loadFile(String fileName) {
-        log.info("/loadFile GET - {}", fileName);
+        log.info("100 /loadFile GET - {}", fileName); // 이미지열면 바로 로드찍힘
 
         // 클라이언트가 요청하는 파일의 진짜 바이트 데이터를 갖다줘야함
 
@@ -115,6 +115,7 @@ public class UploadController {
             // ex) image/jpeg, image/png, image/gif/ 이미지인지
             // 확장자를 추출해야 함.
             String ext = FileUtils.getFileExtension(fileName); // 소포를보낼때 내용물이 뭔지알려줘야함
+            log.info("118 {}",ext);
             MediaType mediaType = FileUtils.getMediaType(ext);
 
             // 응답헤더에 미디어 타입 설정

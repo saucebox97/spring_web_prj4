@@ -44,7 +44,7 @@
         <%@ include file="../include/header.jsp" %>
 
         <div class="write-container">
-
+                                                                <!-- autocomplete = 자동완성기능 -->
             <form id="write-form" action="/board/write" method="post" autocomplete="off" enctype="multipart/form-data">
                 <!-- readonly = 읽기전용 -->
                 <div class="mb-3">
@@ -63,6 +63,7 @@
 
                 <!-- 첨부파일 드래그 앤 드롭 영역 -->
                 <div class="form-group">
+
                     <div class="fileDrop">
                         <span>Drop Here!!</span>
                     </div>
@@ -71,8 +72,8 @@
                         <input class="fileOpen" type="file" name="files" multiple>
                         <button class ="submit" type="submit">업로드</button>
                     </form>
-
-                    <div class="uploadDiv">
+                                        <!-- files이라는 이름이 컨트롤러로 간다 -->
+                    <div class="uploadDiv"> 
                         <input type="file" name="files" id="ajax-file" style="display:none;">
                     </div>
                     <!-- 업로드된 파일의 썸네일을 보여줄 영역 -->
@@ -149,7 +150,7 @@
 
             function isImageFile(originFileName) {
                 //정규표현식 / $는 머머로 끝나는 / 저거 3개로끝나면 true / i는 대소문자구분 x 대문자 JPG등 도 걸림
-                const pattern = /jpg$|gif$|png$/i;
+                const pattern = /jpg$|gif$|png$|jfif$|jpeg$/i;
                 return originFileName.match(pattern);
             }
 
@@ -164,6 +165,7 @@
                 $hiddenInput.setAttribute('type', 'hidden');
                 $hiddenInput.setAttribute('name', 'fileNames');
                 $hiddenInput.setAttribute('value', fileName); // 변해야돼기떄문에 ''붙이면안됌
+                console.log(fileName);
 
                 $('#write-form').append($hiddenInput);
 
@@ -208,18 +210,18 @@
             // Open 이벤트
             const $OpenBox = $('.fileOpen');
 
-            console.log($OpenBox);
+            console.log($OpenBox); // 341
 
             // Open 열기 이벤트
             $OpenBox.on("change", e => {
                 // e.preventDefault(); // 기본기능방지
 
-                console.log($OpenBox); // 여기까지됌 346
+                console.log($OpenBox); // 여기까지됌 347
 
                 const files = $OpenBox[0].files;
-                console.log(files);
+                console.log(files); // 350
 
-                // 2. 읽은 파일 데이터를 input[type-file]태그에 저장 / 59줄
+                // 2. 읽은 파일 데이터를 input[type-file]태그에 저장 / 72줄
                 const $fileInput = $('#ajax-file');
                 $fileInput.prop('files', files); // input에 파일정보를 담는다 /form태그라생각
 
@@ -230,7 +232,8 @@
 
                 // 4. 전송할 파일들을 전부 FormData안에 포장
                 for (let file of $fileInput[0].files) {
-                    formData.append('files', file); //controller 76줄에 감
+                    console.log(file); //363
+                    formData.append('files', file); //controller 97줄에 감
                 }
 
                 // 5. 비동기 요청 전송
@@ -247,7 +250,7 @@
                         return res.json();
                     })
                     .then(fileNames => { // 컨트롤러에서 파일보냄 res.json()가 fileNames
-                        console.log(fileNames);
+                        console.log(fileNames); //381
 
                         showFileData(fileNames);
                     });

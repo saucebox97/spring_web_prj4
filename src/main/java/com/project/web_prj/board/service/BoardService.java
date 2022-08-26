@@ -32,7 +32,7 @@ public class BoardService {
     // 게시물 등록 요청 중간 처리
     @Transactional
     public boolean saveService(Board board) {
-        log.info("save service start - {}", board);
+        log.info("35 save service start - {}", board);// file데이터가넣어짐
 
         // 게시물 내용 DB에 저장
         boolean flag = boardMapper.save(board);
