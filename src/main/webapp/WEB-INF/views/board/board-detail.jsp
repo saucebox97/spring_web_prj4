@@ -385,10 +385,12 @@
         // 댓글 목록을 서버로부터 비동기요청으로 불러오는 함수
         function showReplies(pageNum = 1) {
 
-            fetch(URL + '?boardNo=' + bno + '&pageNum=' + pageNum)
+            
+            fetch(URL + '?boardNo=' + bno + '&pageNum=' + pageNum) //515
                 .then(res => res.json())
                 .then(replyMap => {
                     makeReplyDOM(replyMap);
+                    // console.log(replyMap);
                 });
         }
 
@@ -424,6 +426,7 @@
             console.log($writerInput); // 551
             console.log($contentInput); // 552
 
+            console.log($contentInput.value); // 554
             // 서버로 전송할 데이터들
             const replyData = {
                 replyWriter: $writerInput.value,

@@ -11,44 +11,87 @@
         <result property="viewCnt" column="view_cnt" />
     </resultMap>
 
+<!--    <insert id="save">-->
+<!--        INSERT INTO tbl_board-->
+<!--        (board_no, writer, title, content, account)-->
+<!--        VALUES (seq_tbl_board.nextval, #{writer}, #{title}, #{content}, #{account})-->
+
+<!--    </insert>-->
+<!--마리아 DB save-->
     <insert id="save">
         INSERT INTO tbl_board
-        (board_no, writer, title, content, account)
-        VALUES (seq_tbl_board.nextval, #{writer}, #{title}, #{content}, #{account})
-
+        (writer, title, content, account)
+        VALUES (#{writer}, #{title}, #{content}, #{account})
     </insert>
 
+
+
+<!--    <select id="findAll" resultMap="boardMap">-->
+<!--        SELECT  *-->
+<!--        FROM (-->
+<!--                SELECT ROWNUM rn, v_board.*-->
+<!--                FROM (-->
+<!--                        SELECT *-->
+<!--                        FROM tbl_board-->
+<!--                        ORDER BY board_no DESC-->
+<!--                        ) v_board-->
+<!--        )-->
+<!--        WHERE rn BETWEEN (#{pageNum} - 1) * #{amount} + 1 AND (#{pageNum} * #{amount})-->
+<!--    </select>-->
+
+<!--  maria db  -->
+
     <select id="findAll" resultMap="boardMap">
+
         SELECT  *
-        FROM (
-                SELECT ROWNUM rn, v_board.*
-                FROM (
-                        SELECT *
-                        FROM tbl_board
-                        ORDER BY board_no DESC
-                        ) v_board
-        )
-        WHERE rn BETWEEN (#{pageNum} - 1) * #{amount} + 1 AND (#{pageNum} * #{amount})
+        FROM tbl_board
+        ORDER BY board_no DESC
+        LIMIT #{start}, #{amount}
+
     </select>
+
     <!--    search니까 page로들어가고 찾아야한다 page.pageNum/page.amount/ +대신 ||   -->
+<!--    <select id="findAll2" resultMap="boardMap">-->
+<!--        SELECT  *-->
+<!--        FROM (-->
+<!--                SELECT ROWNUM rn, v_board.*-->
+<!--                FROM (-->
+<!--                        SELECT *-->
+<!--                        FROM tbl_board-->
+<!--                        <if test="type == 'title'">WHERE title LIKE '%' || #{keyword} || '%'</if>-->
+<!--                        <if test="type == 'writer'">WHERE writer LIKE '%' || #{keyword} || '%'</if>-->
+<!--                        <if test="type == 'content'">WHERE content LIKE '%' || #{keyword} || '%'</if>-->
+<!--                        <if test="type == 'tc'">-->
+<!--                            WHERE title LIKE '%' || #{keyword} || '%'-->
+<!--                                OR content LIKE '%' || #{keyword} || '%'-->
+<!--                        </if>-->
+<!--                        ORDER BY board_no DESC-->
+<!--                        ) v_board-->
+<!--            )-->
+<!--        WHERE rn BETWEEN (#{pageNum} - 1) * #{amount} + 1 AND (#{pageNum} * #{amount})-->
+<!--    </select>-->
+
+<!--    Maria DB-->
+
+<!--    검색조건문 분리-->
+    <sql id="search">
+        <if test="type == 'title'">WHERE title LIKE CONCAT('%', #{keyword}, '%')</if>
+        <if test="type == 'writer'">WHERE writer LIKE CONCAT('%', #{keyword}, '%')</if>
+        <if test="type == 'content'">WHERE content LIKE CONCAT('%', #{keyword}, '%')</if>
+        <if test="type == 'tc'">
+            WHERE title LIKE CONCAT('%', #{keyword}, '%')
+            OR content LIKE CONCAT('%', #{keyword}, '%')
+        </if>
+    </sql>
+
     <select id="findAll2" resultMap="boardMap">
-        SELECT  *
-        FROM (
-                SELECT ROWNUM rn, v_board.*
-                FROM (
-                        SELECT *
-                        FROM tbl_board
-                        <if test="type == 'title'">WHERE title LIKE '%' || #{keyword} || '%'</if>
-                        <if test="type == 'writer'">WHERE writer LIKE '%' || #{keyword} || '%'</if>
-                        <if test="type == 'content'">WHERE content LIKE '%' || #{keyword} || '%'</if>
-                        <if test="type == 'tc'">
-                            WHERE title LIKE '%' || #{keyword} || '%'
-                                OR content LIKE '%' || #{keyword} || '%'
-                        </if>
-                        ORDER BY board_no DESC
-                        ) v_board
-            )
-        WHERE rn BETWEEN (#{pageNum} - 1) * #{amount} + 1 AND (#{pageNum} * #{amount})
+
+        SELECT *
+        FROM tbl_board
+        <include refid="search" />
+        ORDER BY board_no DESC
+        LIMIT #{start}, #{amount}
+
     </select>
 
     <select id="findOne" resultMap="boardMap">
@@ -72,16 +115,23 @@
         FROM tbl_board
     </select>
 <!-- tc = 제목+내용 -->
+<!--    <select id="getTotalCount2" resultType="int">-->
+<!--        SELECT COUNT(*)-->
+<!--        FROM tbl_board-->
+<!--        <if test="type == 'title'">WHERE title LIKE '%' || #{keyword} || '%'</if>-->
+<!--        <if test="type == 'writer'">WHERE writer LIKE '%' || #{keyword} || '%'</if>-->
+<!--        <if test="type == 'content'">WHERE content LIKE '%' || #{keyword} || '%'</if>-->
+<!--        <if test="type == 'tc'">-->
+<!--            WHERE title LIKE '%' || #{keyword} || '%'-->
+<!--            OR content LIKE '%' || #{keyword} || '%'-->
+<!--        </if>-->
+<!--    </select>-->
+
+<!--    마리아 db-->
     <select id="getTotalCount2" resultType="int">
         SELECT COUNT(*)
         FROM tbl_board
-        <if test="type == 'title'">WHERE title LIKE '%' || #{keyword} || '%'</if>
-        <if test="type == 'writer'">WHERE writer LIKE '%' || #{keyword} || '%'</if>
-        <if test="type == 'content'">WHERE content LIKE '%' || #{keyword} || '%'</if>
-        <if test="type == 'tc'">
-            WHERE title LIKE '%' || #{keyword} || '%'
-            OR content LIKE '%' || #{keyword} || '%'
-        </if>
+        <include refid="search" />
     </select>
 
     <update id="upViewCount">
@@ -91,12 +141,21 @@
     </update>
 
     <!--  첨부파일 추가  / currval 은 nextval보다 1작음 / nextval호출하면 (currval,next)1씩증가 currval은 호출해도 1씩증가안함-->
+<!--    <insert id="addFile">-->
+
+<!--        INSERT INTO file_upload-->
+<!--            (file_name, bno)-->
+<!--        VALUES-->
+<!--            (#{fileName}, seq_tbl_board.currval)-->
+
+<!--    </insert>-->
+<!--마리아db-->
     <insert id="addFile">
 
         INSERT INTO file_upload
-            (file_name, bno)
+        (file_name, bno)
         VALUES
-            (#{fileName}, seq_tbl_board.currval)
+        (#{fileName}, LAST_INSERT_ID())
 
     </insert>
 

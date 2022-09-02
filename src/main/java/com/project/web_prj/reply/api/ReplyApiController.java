@@ -31,7 +31,7 @@ public class ReplyApiController {
     // 댓글 목록 요청
     @GetMapping("")
     public Map<String, Object> list(Long boardNo, Page page) {
-        log.info("/api/v1/replies GET! bno={}, page={}", boardNo, page);
+        log.info("34 /api/v1/replies GET! bno={}, page={}", boardNo, page);
 
         Map<String, Object> replies = replyService.getList(boardNo, page);
 
@@ -42,7 +42,7 @@ public class ReplyApiController {
     @PostMapping("") // @RequestBody 제이슨으로 클라이언트가서버에보냄
     public String create(@RequestBody Reply reply, HttpSession session) {
         reply.setAccount(LoginUtils.getCurrentMemberAccount(session));
-        log.info("/api/v1/replies POST! - {}", reply);
+        log.info("45 /api/v1/replies POST! - {}", reply);
         boolean flag = replyService.write(reply);
 //        replyService.write(reply); 한번등록할떄 1개가 더등록됌
         return flag ? "insert-success" : "insert-fail";
